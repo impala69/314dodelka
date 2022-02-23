@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+    <title>Users</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<h1>Users</h1>
+<table>
+    <thead>
+    <tr>
+        <th> Id</th>
+        <th> Name</th>
+        <th> Password</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text = "${user.id}"> Id </td>
+        <td th:text ="${user.username}">Name</td>
+        <td th:text ="${user.password}">Password</td>
+        <td>
+            <a th:href="'/edit/' + ${user.id}">
+                <button type="submit">Edit userdata</button>
+            </a>
+        </td>
+        <td>
+            <form th:action="${user.id} +'/remove'" method="post">
+                <button type="submit">delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>Create</h2>
+<a href="/create">Create new user</a>
+
+<br>
+<a href="/logout">Logout</a>
+</body>
+</html>
