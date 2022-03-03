@@ -14,21 +14,19 @@ import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 import java.util.HashSet;
 import java.util.Set;
-@Service("userDetailsServiceImpl")
+@Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String email)
+            throws UsernameNotFoundException {
+        User user = userRepository.getUserByEmail(email);
+
         if (user == null) {
-            throw new UsernameNotFoundException("Такого юзера нет");
-        }
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        for (Role role : user.getRoles()){
-            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+            throw new UsernameNotFoundException("Could not find user");
         }
         return new UserDetailsImpl(user);
-
     }
 }

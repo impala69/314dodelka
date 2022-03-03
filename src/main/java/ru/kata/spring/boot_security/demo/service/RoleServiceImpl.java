@@ -34,7 +34,7 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public List<Role> findAllById(List<Long> list) {
+    public Iterable<Role> findAllById(List<Long> list) {
         return roleRepository.findAllById(list);
     }
 }

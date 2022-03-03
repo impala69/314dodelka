@@ -27,9 +27,9 @@ public class TestData {
         roleService.save(admin);
         roleService.save(user);
 
-        userService.save(new User("Admin", "1234", Set.of(admin)));
-        userService.save(new User("Max","1234",Set.of(user)));
-        userService.save(new User("Love", "Love", Set.of(user)));
+        userService.save(new User("admin@mail.ru", "1234","Admin","Admin",20, Set.of(admin)));
+        userService.save(new User("max@mail.ru","1234","Max","Titov",24,Set.of(user)));
+        userService.save(new User("love@mail.ru", "2222","Lubov","Muratova",18, Set.of(user)));
 
     }
 }
