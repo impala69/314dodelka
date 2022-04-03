@@ -1,0 +1,69 @@
+package ru.kata.spring.boot_security.demo.dao;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Repository;
+import ru.kata.spring.boot_security.demo.models.User;
+
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.List;
+
+@Repository
+public class UserDaoImpl implements UserDao {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public void save(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        entityManager.persist(user);
+    }
+
+    @Override
+    public void deleteUser(long id) {
+        User userDelete = getUserById(id);
+        entityManager.remove(userDelete);
+    }
+
+    @Override
+    public void editUser(User user, long id) {
+        User userEdit = getUserById(id);
+        user.setId(id);
+        userEdit.setFirstName(user.getFirstName());
+        userEdit.setLastName(user.getLastName());
+        userEdit.setAge(user.getAge());
+        userEdit.setRoles(user.getRoles());
+        userEdit.setEmail(user.getEmail());
+        userEdit.setPassword(passwordEncoder.encode(user.getPassword()));
+        entityManager.merge(userEdit);
+    }
+
+    @Override
+    public User getUserByName(String email) {
+        Query query = entityManager.createQuery("from User where email =?1");
+        query.setParameter(1, email);
+        return (User) query.getSingleResult();
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return entityManager.createQuery("from User", User.class).getResultList();
+    }
+
+    @Override
+    public User getUserById(long id) {
+        return entityManager.find(User.class, id);
+    }
+}
