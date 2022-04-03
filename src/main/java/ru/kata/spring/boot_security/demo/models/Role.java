@@ -9,54 +9,54 @@ import java.util.Set;
 // только один метод getAuthority() (возвращает имя роли).
 // Имя роли должно соответствовать шаблону: «ROLE_ИМЯ», например, ROLE_USER.
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+
+import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
+
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
     @Id
-    @Column(name = "role_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
+
+    @Column(name = "role")
+    private String role;
+
+
     @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
 
-    public Role(Long id, String role) {
-        this.id = id;
-        this.name = role;
-    }
-
-    public Role(String name) {
-        this.name = name;
-    }
+    @JsonIgnore
+    private List<User> usersList; // поменял Set на List + поставил аннотацию от бесконечной рекурскии
 
     public Role() {
-
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
     public String getAuthority() {
-        return name;
+        return getRole();
     }
 
     @Override
     public String toString() {
-        return name;
+        return role;
+    }
+
+
+    public Role(String role) {
+        if (role.contains("ADMIN")) {
+            this.id = 2L;
+        } else if (role.contains("USER")) {
+            this.id = 1L;
+        }
+        this.role = role;
     }
 }
-
